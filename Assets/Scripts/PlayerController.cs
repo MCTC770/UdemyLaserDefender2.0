@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour {
     private float xmin = -5;
     private float xmax = 5;
     private Vector3 shipSize;
+    private AudioSource playerFire;
 
     void Start()
     {
@@ -26,11 +27,13 @@ public class PlayerController : MonoBehaviour {
         shipSize = GetComponent<Transform>().localScale;
         xmin = leftmost.x + (shipSize.x / 2);
         xmax = rightmost.x - (shipSize.x / 2);
+        playerFire = GameObject.Find("PlayerFireSound").GetComponent<AudioSource>();
     }
     void Fire()
     {
         GameObject beam = Instantiate(projectilePrefab, transform.position, Quaternion.identity) as GameObject;
         beam.GetComponent<Rigidbody2D>().velocity = new Vector3(0, projectileSpeed, 0);
+        playerFire.Play();
     }
 
     void Update () {
@@ -64,6 +67,8 @@ public class PlayerController : MonoBehaviour {
             enemyMissile.EnemyHit();
             if (health <= 0)
             {
+                LevelManager levelLoader = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+                levelLoader.LoadLevel("End Screen");
                 Destroy(gameObject);
             }
         }
